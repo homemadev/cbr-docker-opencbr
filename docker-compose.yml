@@ -21,6 +21,7 @@ services:
         volumes:
             - ./openmrs.war:/usr/local/tomcat/webapps/openmrs.war
             - ./openmrs-runtime.properties:/root/.OpenMRS/openmrs-runtime.properties
+            - ./modules:/root/.OpenMRS/modules
         ports:
             - "8081:8080"
         networks:
