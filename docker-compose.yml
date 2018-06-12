@@ -15,7 +15,7 @@ services:
           - opencbr-database
     webapp:
         image: tomcat:7-jre7-alpine
-        container_name: openshr-tomcat
+        container_name: opencbr-tomcat
         depends_on:
             - db
         volumes:
