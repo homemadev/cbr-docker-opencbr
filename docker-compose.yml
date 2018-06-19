@@ -16,6 +16,9 @@ services:
     webapp:
         image: tomcat:7-jre7-alpine
         container_name: opencbr-tomcat
+        build:
+            context: .
+            dockerfile: Dockerfile
         depends_on:
             - db
         volumes:

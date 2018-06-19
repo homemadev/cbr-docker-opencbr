@@ -1,23 +1,15 @@
-FROM java:openjdk-7-jre
-#ubuntu:14.04
-#java:openjdk-7-jre
+FROM tomcat:7-jre7-alpine
 
-ENV OPENMRS_HOME=/usr/share/openmrs
-ENV OPENMRS_HOME $OPENMRS_HOME
+RUN apk add curl
 
-#RUN apt-get update
-#RUN apt-get -yq install wget
-#RUN apt-get -yq install unzip
-#RUN apt-get -yq install openjdk-7-jre
-RUN mkdir $OPENMRS_HOME
-#RUN wget --progress=bar:force https://sourceforge.net/projects/openmrs/files/releases/OpenMRS_2.4/openmrs-standalone-2.4.zip/download -O /tmp/openmrs.zip
-COPY openmrs-standalone-2.4.zip /tmp/openmrs.zip
-COPY init.sh $OPENMRS_HOME/init.sh
-RUN cd /tmp && unzip -q openmrs.zip
-RUN cp -r /tmp/openmrs-standalone-1.11.6/* $OPENMRS_HOME
-RUN adduser --disabled-password --ingroup sudo openmrs
-EXPOSE 8081
-RUN chown openmrs -R $OPENMRS_HOME
-WORKDIR $OPENMRS_HOME
-RUN chmod +x init.sh
-CMD $OPENMRS_HOME/init.sh run
+# Install dockerize
+ENV DOCKERIZE_VERSION="v0.2.0"
+ENV TOMCAT_HOME = /usr/local/tomcat
+
+RUN curl -L "https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" \
+    -o "/tmp/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" && \
+    tar -C /usr/local/bin -xzvf "/tmp/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz"
+
+WORKDIR ${TOMCAT_HOME}
+
+CMD ["dockerize","-wait","tcp://opencbr-db-mysql:3306","-timeout","120s","/usr/local/tomcat/bin/catalina.sh", "run"]
