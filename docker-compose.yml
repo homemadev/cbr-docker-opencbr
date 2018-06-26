@@ -2,25 +2,26 @@ version: "3.3"
 networks:
    opencbr-database:
 services:
-    db:
+    opencbr-mysql:
         image: mysql/mysql-server:5.6
-        container_name: opencbr-db-mysql
+        container_name: opencbr-mysql
         volumes:
             - ./openmrs_db.sql:/docker-entrypoint-initdb.d/openmrs_db.sql
+            - ./openmrs_db_config.sql:/docker-entrypoint-initdb.d/openmrs_db_config.sql
         env_file:
             - db.env
         ports:
             - "3307:3306"
         networks:
           - opencbr-database
-    webapp:
+    opencbr-openmrs:
         image: tomcat:7-jre7-alpine
-        container_name: opencbr-tomcat
+        container_name: opencbr-openmrs
         build:
             context: .
             dockerfile: Dockerfile
         depends_on:
-            - db
+            - opencbr-mysql
         volumes:
             - ./openmrs.war:/usr/local/tomcat/webapps/openmrs.war
             - ./openmrs-runtime.properties:/root/.OpenMRS/openmrs-runtime.properties
